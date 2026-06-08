@@ -14,6 +14,7 @@ function GoogleIcon() {
     </svg>
   );
 }
+
 import { createClient } from "@/lib/supabase/client";
 import { signupSupplierProfile } from "@/app/actions/auth";
 import {
@@ -25,12 +26,6 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
 type Role = "customer" | "supplier" | "influencer";
-
-const ROLE_LABELS: Record<Role, { label: string; desc: string }> = {
-  customer: { label: "구매자", desc: "공동구매에 참여하고 싶어요" },
-  influencer: { label: "인플루언서", desc: "내 채널로 공동구매를 진행하고 싶어요" },
-  supplier: { label: "공급자", desc: "상품을 올리고 판매를 원해요" },
-};
 
 export default function SignupPage() {
   const router = useRouter();
@@ -51,19 +46,6 @@ export default function SignupPage() {
   const [info, setInfo] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [googleLoading, setGoogleLoading] = React.useState(false);
-
-  async function handleGoogleSignup() {
-    setGoogleLoading(true);
-    const supabase = createClient();
-    const siteUrl = window.location.origin;
-    const nextPath = role === "influencer" ? "/influencer" : "/";
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${siteUrl}/api/auth/callback?next=${encodeURIComponent(nextPath)}&role=${role}`,
-      },
-    });
-  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -131,32 +113,48 @@ export default function SignupPage() {
         <CardDescription>공동구매 플랫폼에 오신 것을 환영합니다.</CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="flex flex-col gap-3 mb-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setGoogleLoading(true);
+              const supabase = createClient();
+              const siteUrl = window.location.origin;
+              const nextPath = role === "influencer" ? "/influencer" : role === "supplier" ? "/supplier" : "/";
+              supabase.auth.signInWithOAuth({
+                provider: "google",
+                options: {
+                  redirectTo: `${siteUrl}/api/auth/callback?next=${encodeURIComponent(nextPath)}${role !== "customer" ? `&role=${role}` : ""}`,
+                },
+              });
+            }}
+            disabled={googleLoading}
+            className="w-full flex items-center gap-2"
+          >
+            <GoogleIcon />
+            {googleLoading ? "이동 중..." : "Google로 계속하기"}
+          </Button>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-zinc-200" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-white px-2 text-zinc-400">또는 이메일로 가입</span>
+            </div>
+          </div>
+        </div>
+
         <form className="flex flex-col gap-4" onSubmit={onSubmit}>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="name">이름</Label>
-            <Input id="name" required value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email">이메일</Label>
-            <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="password">비밀번호</Label>
-            <Input id="password" type="password" autoComplete="new-password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
-            <p className="text-xs text-zinc-500">최소 6자 이상</p>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="phone">전화번호</Label>
-            <Input id="phone" type="tel" placeholder="선택 입력" value={phone} onChange={(e) => setPhone(e.target.value)} />
-          </div>
-
+          {/* 회원 유형 — 인플루언서/공급자만 선택, 기본은 구매자 */}
           <div className="flex flex-col gap-2">
             <Label>회원 유형</Label>
             <div className="grid grid-cols-1 gap-2">
-              {(Object.entries(ROLE_LABELS) as [Role, typeof ROLE_LABELS[Role]][]).map(([r, { label, desc }]) => (
+              {([
+                { r: "influencer" as Role, label: "인플루언서", desc: "내 채널로 공동구매를 진행하고 싶어요" },
+                { r: "supplier" as Role, label: "공급자", desc: "상품을 올리고 인플루언서에게 판매를 맡기고 싶어요" },
+              ]).map(({ r, label, desc }) => (
                 <label
                   key={r}
                   className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors ${
@@ -178,11 +176,37 @@ export default function SignupPage() {
                 </label>
               ))}
             </div>
+            <p className="text-xs text-zinc-400 mt-1">
+              공동구매 참여만 하실 분은 유형을 선택하지 않아도 됩니다.
+            </p>
+          </div>
+
+          <Separator />
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="name">이름</Label>
+            <Input id="name" required value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="email">이메일</Label>
+            <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="password">비밀번호</Label>
+            <Input id="password" type="password" autoComplete="new-password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
+            <p className="text-xs text-zinc-500">최소 6자 이상</p>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="phone">전화번호</Label>
+            <Input id="phone" type="tel" placeholder="선택 입력" value={phone} onChange={(e) => setPhone(e.target.value)} />
           </div>
 
           {role === "supplier" && (
             <>
-              <Separator className="my-2" />
+              <Separator className="my-1" />
               <p className="text-sm font-semibold">공급자 정보</p>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="business_name">상호 *</Label>
@@ -205,9 +229,9 @@ export default function SignupPage() {
 
           {role === "influencer" && (
             <>
-              <Separator className="my-2" />
+              <Separator className="my-1" />
               <p className="text-xs text-zinc-500 bg-zinc-50 rounded-md p-3">
-                가입 후 <strong>채널 정보</strong> 메뉴에서 인스타그램, 유튜브 등 채널 링크와 핸들(@이름)을 등록할 수 있어요.
+                가입 후 <strong>채널 정보</strong> 메뉴에서 인스타그램, 유튜브 등 채널 링크와 핸들을 등록하고, 원하는 상품에 판매 신청을 할 수 있어요.
               </p>
             </>
           )}
@@ -217,30 +241,6 @@ export default function SignupPage() {
           <Button type="submit" disabled={loading} className="mt-2">
             {loading ? "가입 중..." : "회원가입"}
           </Button>
-
-          {role !== "supplier" && (
-            <>
-              <div className="relative my-1">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-zinc-200" />
-                </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="bg-white px-2 text-zinc-400">또는</span>
-                </div>
-              </div>
-
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleGoogleSignup}
-                disabled={googleLoading}
-                className="w-full flex items-center gap-2"
-              >
-                <GoogleIcon />
-                {googleLoading ? "이동 중..." : `Google로 ${role === "influencer" ? "인플루언서 " : ""}가입`}
-              </Button>
-            </>
-          )}
 
           <p className="text-sm text-center text-zinc-600 mt-2">
             이미 계정이 있으신가요?{" "}

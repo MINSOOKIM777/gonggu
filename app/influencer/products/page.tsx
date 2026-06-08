@@ -81,14 +81,24 @@ function ProductCard({
       <div className="p-4 space-y-3">
         <div>
           <p className="font-medium text-zinc-900 line-clamp-2">{product.name}</p>
-          <p className="mt-1 text-lg font-bold text-zinc-900">{formatKRW(product.price)}</p>
-          {product.compare_at_price && product.compare_at_price > product.price && (
-            <p className="text-xs text-zinc-400 line-through">{formatKRW(product.compare_at_price)}</p>
+          {appliedStatus === "approved" ? (
+            <>
+              <p className="mt-1 text-lg font-bold text-zinc-900">{formatKRW(product.price)}</p>
+              {product.compare_at_price && product.compare_at_price > product.price && (
+                <p className="text-xs text-zinc-400 line-through">{formatKRW(product.compare_at_price)}</p>
+              )}
+            </>
+          ) : (
+            <p className="mt-1 text-sm text-zinc-400 italic">승인 후 단가 공개</p>
           )}
         </div>
         <div className="flex items-center justify-between">
           <span className="text-xs text-zinc-500">재고 {product.stock.toLocaleString("ko-KR")}개</span>
-          <span className="text-xs text-zinc-500">수수료 {(Number(product.commission_rate) * 100).toFixed(0)}%</span>
+          {appliedStatus === "approved" ? (
+            <span className="text-xs text-zinc-500">수수료 {(Number(product.commission_rate) * 100).toFixed(0)}%</span>
+          ) : (
+            <span className="text-xs text-zinc-400">—</span>
+          )}
         </div>
         {appliedStatus ? (
           <Badge

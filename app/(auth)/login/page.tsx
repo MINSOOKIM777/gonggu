@@ -86,6 +86,27 @@ function LoginForm() {
         <CardDescription>이메일과 비밀번호를 입력해주세요.</CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="flex flex-col gap-3 mb-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleGoogleLogin}
+            disabled={googleLoading}
+            className="w-full flex items-center gap-2"
+          >
+            <GoogleIcon />
+            {googleLoading ? "이동 중..." : "Google로 로그인"}
+          </Button>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-zinc-200" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-white px-2 text-zinc-400">또는 이메일로 로그인</span>
+            </div>
+          </div>
+        </div>
+
         <form className="flex flex-col gap-4" onSubmit={onSubmit}>
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">이메일</Label>
@@ -118,26 +139,6 @@ function LoginForm() {
 
           <Button type="submit" disabled={loading} className="mt-2">
             {loading ? "로그인 중..." : "로그인"}
-          </Button>
-
-          <div className="relative my-1">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-zinc-200" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-2 text-zinc-400">또는</span>
-            </div>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleGoogleLogin}
-            disabled={googleLoading}
-            className="w-full flex items-center gap-2"
-          >
-            <GoogleIcon />
-            {googleLoading ? "이동 중..." : "Google로 로그인"}
           </Button>
 
           <p className="text-sm text-center text-zinc-600 mt-2">
