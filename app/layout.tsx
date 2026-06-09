@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "수다공구",
-  description: "인플루언서 공동구매 플랫폼 수다공구",
+  title: "공구이음",
+  description: "인플루언서 공동구매 플랫폼 공구이음",
 };
 
 export default function RootLayout({

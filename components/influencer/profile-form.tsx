@@ -38,7 +38,7 @@ export function InfluencerProfileForm({ initial, profileId }: Props) {
         <div className="space-y-1.5">
           <Label htmlFor="handle">핸들 (공개 링크)</Label>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-zinc-500">수다공구.com/g/</span>
+            <span className="text-sm text-zinc-500">공구이음.com/g/</span>
             <Input
               id="handle"
               name="handle"

@@ -10,7 +10,7 @@ export async function Header() {
     <header className="sticky top-0 z-40 bg-white border-b border-zinc-200">
       <div className="mx-auto max-w-7xl px-4 py-3 flex items-center gap-4">
         <Link href="/" className="text-2xl font-bold text-[var(--brand)] shrink-0 tracking-tight">
-          수다공구
+          공구이음
         </Link>
 
         <div className="flex-1" />
