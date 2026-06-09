@@ -23,6 +23,12 @@ export async function Header() {
             <Users className="h-4 w-4" />
             공동구매
           </Link>
+          <Link
+            href="/why"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-100 hover:text-[var(--brand)]"
+          >
+            공동구매란?
+          </Link>
         </nav>
 
         <div className="flex items-center gap-1 shrink-0">
