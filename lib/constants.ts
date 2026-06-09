@@ -1,4 +1,4 @@
-export const DEFAULT_COMMISSION_RATE = 0.1;
+export const DEFAULT_COMMISSION_RATE = 0.2;
 
 export const ORDER_STATUS_LABEL: Record<string, string> = {
   pending: "결제대기",
