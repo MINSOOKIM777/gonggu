@@ -49,7 +49,7 @@ export default async function Home() {
           <p className="text-sm font-medium text-[var(--brand)] mb-2">인플루언서 공동구매 플랫폼</p>
           <h1 className="text-3xl md:text-5xl font-bold text-zinc-900 leading-tight">
             믿고 사는 공동구매,<br />
-            <span className="text-[var(--brand)]">공구몰</span>에서 함께해요
+            <span className="text-[var(--brand)]">수다공구</span>에서 함께해요
           </h1>
           <p className="mt-4 text-zinc-500 text-base max-w-md mx-auto">
             내가 팔로우하는 인플루언서가 직접 검증한 상품을 함께 구매하고 더 큰 혜택을 누리세요.

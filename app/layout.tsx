@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "마켓",
-  description: "최저가 보장 마켓",
+  title: "수다공구",
+  description: "인플루언서 공동구매 플랫폼 수다공구",
 };
 
 export default function RootLayout({

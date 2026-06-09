@@ -110,7 +110,7 @@ export default function SignupPage() {
     <Card>
       <CardHeader>
         <CardTitle>회원가입</CardTitle>
-        <CardDescription>공동구매 플랫폼에 오신 것을 환영합니다.</CardDescription>
+        <CardDescription>수다공구에 오신 것을 환영합니다.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-3 mb-4">
