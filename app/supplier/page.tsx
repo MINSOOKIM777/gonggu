@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { requireSupplier } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatKRW } from "@/lib/format";
+import type { Supplier } from "@/types/db";
 
 export default async function SupplierDashboardPage() {
   const profile = await requireSupplier();
@@ -9,6 +11,12 @@ export default async function SupplierDashboardPage() {
 
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+  const { data: supplier } = await supabase
+    .from("suppliers")
+    .select("business_name")
+    .eq("id", profile.id)
+    .maybeSingle<Pick<Supplier, "business_name">>();
 
   const { count: activeProducts } = await supabase
     .from("products")
@@ -61,6 +69,13 @@ export default async function SupplierDashboardPage() {
         <h1 className="text-2xl font-bold text-zinc-900">대시보드</h1>
         <p className="mt-1 text-sm text-zinc-500">{profile.name}님, 환영합니다.</p>
       </div>
+
+      {!supplier && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          상호명 등 사업자 정보를 등록해야 상품을 판매할 수 있습니다.
+          <Link href="/supplier/profile" className="ml-2 font-medium underline">지금 등록 →</Link>
+        </div>
+      )}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((s) => (
           <Card key={s.title}>

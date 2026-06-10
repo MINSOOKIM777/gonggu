@@ -67,7 +67,11 @@ export default function SignupPage() {
       if (signUpError) { setError(signUpError.message); return; }
 
       if (data.user && !data.session) {
-        setInfo("이메일 인증 후 로그인해 주세요.");
+        setInfo(
+          role === "supplier"
+            ? "이메일 인증 후 로그인해 주세요. 로그인 후 [내 정보]에서 사업자 정보를 등록할 수 있습니다."
+            : "이메일 인증 후 로그인해 주세요."
+        );
         return;
       }
 
