@@ -26,9 +26,14 @@ export default async function SupplierProductsPage() {
           <h1 className="text-2xl font-bold text-zinc-900">상품 관리</h1>
           <p className="mt-1 text-sm text-zinc-500">총 {list.length.toLocaleString("ko-KR")}개</p>
         </div>
-        <Link href="/supplier/products/new">
-          <Button>+ 상품 등록</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/supplier/products/import">
+            <Button variant="outline">시트 일괄 등록</Button>
+          </Link>
+          <Link href="/supplier/products/new">
+            <Button>+ 상품 등록</Button>
+          </Link>
+        </div>
       </div>
 
       {list.length === 0 ? (
