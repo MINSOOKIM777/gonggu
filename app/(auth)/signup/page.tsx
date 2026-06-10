@@ -16,7 +16,7 @@ function GoogleIcon() {
 }
 
 import { createClient } from "@/lib/supabase/client";
-import { signupSupplierProfile } from "@/app/actions/auth";
+import { signup } from "@/app/actions/auth";
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from "@/components/ui/card";
@@ -57,33 +57,24 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
-      const supabase = createClient();
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      const result = await signup({
         email,
         password,
-        options: { data: { role, name, phone: phone || null } },
+        name,
+        phone: phone || null,
+        role,
+        business_name: businessName || undefined,
+        business_number: businessNumber || null,
+        settlement_bank: settlementBank || null,
+        settlement_account: settlementAccount || null,
       });
 
-      if (signUpError) { setError(signUpError.message); return; }
+      if (!result.ok) { setError(result.error); return; }
 
-      if (data.user && !data.session) {
-        setInfo(
-          role === "supplier"
-            ? "이메일 인증 후 로그인해 주세요. 로그인 후 [내 정보]에서 사업자 정보를 등록할 수 있습니다."
-            : "이메일 인증 후 로그인해 주세요."
-        );
-        return;
-      }
-
-      if (role === "supplier") {
-        const result = await signupSupplierProfile({
-          business_name: businessName,
-          business_number: businessNumber || null,
-          settlement_bank: settlementBank || null,
-          settlement_account: settlementAccount || null,
-        });
-        if (!result.ok) { setError(result.error); return; }
-      }
+      // 계정 생성 완료 후 바로 로그인
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) { setError(signInError.message); return; }
 
       router.refresh();
       if (role === "supplier") router.push("/supplier");
